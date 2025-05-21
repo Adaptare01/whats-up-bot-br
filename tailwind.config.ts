@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				whatsapp: {
+					green: '#128C7E',
+					'light-green': '#DCF8C6',
+					'dark-green': '#075E54',
+					'light-gray': '#F0F0F0',
+					'dark-gray': '#333333',
+					'teal-green': '#128C7E',
+					'blue': '#34B7F1',
 				}
 			},
 			borderRadius: {
@@ -84,11 +94,19 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'typing': {
+					'0%': { opacity: '0.3' },
+					'50%': { opacity: '1' },
+					'100%': { opacity: '0.3' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'typing-dot-1': 'typing 1s infinite 0s',
+				'typing-dot-2': 'typing 1s infinite 0.2s',
+				'typing-dot-3': 'typing 1s infinite 0.4s'
 			}
 		}
 	},
