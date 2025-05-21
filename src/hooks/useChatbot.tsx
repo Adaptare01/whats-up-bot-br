@@ -4,9 +4,12 @@ import { Message, WebhookRequest, WebhookResponse } from '@/types/chat';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 
-const WEBHOOK_URL = 'https://primary-production-7d89.up.railway.app/webhook-test/I.Nova Hub';
+// URL do webhook para envio de mensagens
+const WEBHOOK_URL = 'https://primary-production-7d89.up.railway.app/webhook-test/I.Nova%20Hub';
 const SESSION_ID_KEY = 'whatsapp_chatbot_session_id';
 const MESSAGE_COUNT_KEY = 'whatsapp_chatbot_message_count';
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1500;
 
 export const useChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,6 +37,53 @@ export const useChatbot = () => {
     }
   }, []);
 
+  // Função para fazer a requisição ao webhook com tentativas automáticas
+  const fetchWebhook = async (request: WebhookRequest, retryCount = 0): Promise<WebhookResponse> => {
+    try {
+      console.log(`Tentativa ${retryCount + 1} de enviar mensagem para o webhook:`, request);
+      
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+
+      // Tenta obter a resposta como JSON
+      try {
+        const responseText = await response.text();
+        console.log('Resposta do webhook (texto):', responseText);
+        
+        if (!responseText || responseText.trim() === '') {
+          throw new Error('Resposta vazia do servidor');
+        }
+        
+        const data = JSON.parse(responseText);
+        console.log('Resposta do webhook (JSON):', data);
+        return data;
+      } catch (jsonError) {
+        console.error('Erro ao converter resposta para JSON:', jsonError);
+        throw new Error('Resposta inválida do servidor');
+      }
+    } catch (error) {
+      console.error(`Erro na tentativa ${retryCount + 1}:`, error);
+      
+      // Se ainda não atingimos o número máximo de tentativas, tenta novamente
+      if (retryCount < MAX_RETRIES) {
+        console.log(`Tentando novamente em ${RETRY_DELAY}ms...`);
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+        return fetchWebhook(request, retryCount + 1);
+      }
+      
+      throw error;
+    }
+  };
+
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim()) return;
 
@@ -60,23 +110,10 @@ export const useChatbot = () => {
         nrmessage: newMessageCount,
       };
 
-      console.log('Sending webhook request:', request);
+      console.log('Enviando requisição para webhook:', request);
 
-      const response = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`);
-      }
-
-      const data: WebhookResponse = await response.json();
-      console.log('Webhook response:', data);
-
+      const data = await fetchWebhook(request);
+      
       if (data.status === 'success' && data.output) {
         // Add bot response to chat
         const botMessage: Message = {
@@ -86,6 +123,7 @@ export const useChatbot = () => {
           timestamp: Date.now(),
         };
         setMessages((prev) => [...prev, botMessage]);
+        console.log('Mensagem do bot adicionada com sucesso:', botMessage);
       } else {
         throw new Error('Resposta inválida do servidor');
       }
