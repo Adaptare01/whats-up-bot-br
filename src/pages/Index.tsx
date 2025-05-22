@@ -7,7 +7,7 @@ import ConfigModal from '@/components/ConfigModal';
 import ResetConversationButton from '@/components/ResetConversationButton';
 import { useChatbot } from '@/hooks/useChatbot';
 import { Settings } from 'lucide-react';
-import { getMessageCount } from '@/services/storageService';
+import { getMessageCount, setMessageCount } from '@/services/storageService';
 
 const Index = () => {
   const { messages, sendMessage, isLoading, resetChat } = useChatbot();
@@ -47,6 +47,7 @@ const Index = () => {
             className="bg-whatsapp-green text-white px-6 py-2 rounded-full shadow hover:bg-whatsapp-dark-green transition"
             onClick={() => {
               setStarted(true);
+              setMessageCount(0); // Ajusta nrmessage para 0 ao iniciar conversa
               sendMessage('Olá quero inscrever minha ideia empreendedora');
             }}
           >
