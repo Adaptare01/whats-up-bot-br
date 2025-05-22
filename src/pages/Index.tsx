@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import MessageList from '@/components/MessageList';
@@ -41,7 +40,7 @@ const Index = () => {
       
       <MessageList messages={messages} isLoading={isLoading} />
       
-      {messageCount < 9 ? (
+      {messageCount < 8 ? (
         <MessageInput onSendMessage={sendMessage} isLoading={isLoading} />
       ) : (
         <ResetConversationButton onReset={handleResetConversation} />
