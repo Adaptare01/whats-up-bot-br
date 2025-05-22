@@ -37,10 +37,10 @@ export const useChatbot = () => {
     }
   }, []);
 
-  // Função para fazer a requisição ao webhook com tentativas automáticas
+  // Função para fazer a requisição ao webhook com tentativas automáticas e melhor tratamento de resposta
   const fetchWebhook = async (request: WebhookRequest, retryCount = 0): Promise<WebhookResponse> => {
     try {
-      console.log(`Tentativa ${retryCount + 1} de enviar mensagem para o webhook:`, request);
+      console.log(`Tentativa ${retryCount + 1} de enviar mensagem para o webhook n8n:`, request);
       
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
@@ -51,23 +51,53 @@ export const useChatbot = () => {
       });
 
       if (!response.ok) {
+        console.error(`Resposta HTTP não-ok: ${response.status} ${response.statusText}`);
         throw new Error(`Erro HTTP: ${response.status}`);
       }
 
-      // Tenta obter a resposta como JSON
+      // Tenta obter a resposta como texto primeiro
+      const responseText = await response.text();
+      console.log('Resposta do webhook n8n (texto bruto):', responseText);
+      
+      if (!responseText || responseText.trim() === '') {
+        console.error('Resposta vazia recebida do webhook n8n');
+        throw new Error('Resposta vazia do servidor');
+      }
+      
+      // Tenta converter para JSON
       try {
-        const responseText = await response.text();
-        console.log('Resposta do webhook (texto):', responseText);
+        const data = JSON.parse(responseText);
+        console.log('Resposta do webhook n8n convertida para JSON:', data);
         
-        if (!responseText || responseText.trim() === '') {
-          throw new Error('Resposta vazia do servidor');
+        // Se a resposta for um objeto n8n específico, extrair a parte relevante
+        if (data.data) {
+          console.log('Detectada estrutura de dados n8n com propriedade data:', data.data);
+          return {
+            status: 'success',
+            output: typeof data.data === 'string' ? data.data : 
+                    data.data.output || data.data.message || 
+                    (typeof data.data === 'object' ? JSON.stringify(data.data) : 'Resposta recebida')
+          };
         }
         
-        const data = JSON.parse(responseText);
-        console.log('Resposta do webhook (JSON):', data);
-        return data;
+        // Se for um formato simples ou personalizado
+        return {
+          status: data.status || 'success',
+          output: data.output || data.message || data.response || 
+                  (typeof data === 'string' ? data : 'Resposta recebida')
+        };
       } catch (jsonError) {
         console.error('Erro ao converter resposta para JSON:', jsonError);
+        
+        // Se não for JSON válido, tenta usar o texto diretamente
+        if (responseText && responseText.length > 0) {
+          console.log('Usando resposta de texto diretamente como output');
+          return {
+            status: 'success',
+            output: responseText
+          };
+        }
+        
         throw new Error('Resposta inválida do servidor');
       }
     } catch (error) {
@@ -110,11 +140,12 @@ export const useChatbot = () => {
         nrmessage: newMessageCount,
       };
 
-      console.log('Enviando requisição para webhook:', request);
+      console.log('Enviando requisição para webhook n8n:', request);
 
       const data = await fetchWebhook(request);
+      console.log('Resposta processada do webhook n8n:', data);
       
-      if (data.status === 'success' && data.output) {
+      if (data.output) {
         // Add bot response to chat
         const botMessage: Message = {
           id: uuidv4(),
@@ -125,7 +156,8 @@ export const useChatbot = () => {
         setMessages((prev) => [...prev, botMessage]);
         console.log('Mensagem do bot adicionada com sucesso:', botMessage);
       } else {
-        throw new Error('Resposta inválida do servidor');
+        console.error('Resposta sem conteúdo válido:', data);
+        throw new Error('Resposta sem conteúdo válido do servidor');
       }
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
