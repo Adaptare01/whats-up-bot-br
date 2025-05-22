@@ -40,6 +40,7 @@ const Index = () => {
     localStorage.clear(); // Limpa o localStorage ao reiniciar conversa
     resetChat();
     setMessageCount(0);
+    window.location.reload(); // Atualiza a página após reiniciar conversa
   };
 
   return (
