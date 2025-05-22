@@ -4,10 +4,11 @@ import { Message, WebhookRequest, WebhookResponse } from '@/types/chat';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 
-// URL do webhook para envio de mensagens
-const WEBHOOK_URL = 'https://primary-production-7d89.up.railway.app/webhook-test/I.Nova%20Hub';
+// URL padrão do webhook para envio de mensagens
+const DEFAULT_WEBHOOK_URL = 'https://primary-production-7d89.up.railway.app/webhook/I.Nova%20Hub';
 const SESSION_ID_KEY = 'whatsapp_chatbot_session_id';
 const MESSAGE_COUNT_KEY = 'whatsapp_chatbot_message_count';
+const WEBHOOK_URL_KEY = 'whatsapp_webhook_url';
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1500;
 
@@ -16,11 +17,13 @@ export const useChatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string>('');
   const [messageCount, setMessageCount] = useState<number>(0);
+  const [webhookUrl, setWebhookUrl] = useState<string>(DEFAULT_WEBHOOK_URL);
   
   // Initialize session ID or get existing one
   useEffect(() => {
     const storedSessionId = localStorage.getItem(SESSION_ID_KEY);
     const storedMessageCount = localStorage.getItem(MESSAGE_COUNT_KEY);
+    const storedWebhookUrl = localStorage.getItem(WEBHOOK_URL_KEY);
     
     if (storedSessionId) {
       setSessionId(storedSessionId);
@@ -35,14 +38,21 @@ export const useChatbot = () => {
     } else {
       localStorage.setItem(MESSAGE_COUNT_KEY, '0');
     }
+    
+    if (storedWebhookUrl) {
+      setWebhookUrl(storedWebhookUrl);
+    } else {
+      localStorage.setItem(WEBHOOK_URL_KEY, DEFAULT_WEBHOOK_URL);
+    }
   }, []);
 
   // Função para fazer a requisição ao webhook com tentativas automáticas e melhor tratamento de resposta
   const fetchWebhook = async (request: WebhookRequest, retryCount = 0): Promise<WebhookResponse> => {
     try {
-      console.log(`Tentativa ${retryCount + 1} de enviar mensagem para o webhook n8n:`, request);
+      console.log(`Tentativa ${retryCount + 1} de enviar mensagem para o webhook:`, request);
+      console.log(`Usando URL do webhook: ${webhookUrl}`);
       
-      const response = await fetch(WEBHOOK_URL, {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,17 +67,17 @@ export const useChatbot = () => {
 
       // Tenta obter a resposta como texto primeiro
       const responseText = await response.text();
-      console.log('Resposta do webhook n8n (texto bruto):', responseText);
+      console.log('Resposta do webhook (texto bruto):', responseText);
       
       if (!responseText || responseText.trim() === '') {
-        console.error('Resposta vazia recebida do webhook n8n');
+        console.error('Resposta vazia recebida do webhook');
         throw new Error('Resposta vazia do servidor');
       }
       
       // Tenta converter para JSON
       try {
         const data = JSON.parse(responseText);
-        console.log('Resposta do webhook n8n convertida para JSON:', data);
+        console.log('Resposta do webhook convertida para JSON:', data);
         
         // Se for um array, pega o primeiro item (formato da resposta observado nos logs)
         if (Array.isArray(data) && data.length > 0) {
@@ -149,10 +159,10 @@ export const useChatbot = () => {
         nrmessage: newMessageCount,
       };
 
-      console.log('Enviando requisição para webhook n8n:', request);
+      console.log('Enviando requisição para webhook:', request);
 
       const data = await fetchWebhook(request);
-      console.log('Resposta processada do webhook n8n:', data);
+      console.log('Resposta processada do webhook:', data);
       
       if (data.output) {
         // Add bot response to chat
@@ -182,7 +192,7 @@ export const useChatbot = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId, messageCount]);
+  }, [sessionId, messageCount, webhookUrl]);
 
   const resetChat = useCallback(() => {
     setMessages([]);

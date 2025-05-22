@@ -13,21 +13,32 @@ interface ConfigModalProps {
 
 const ConfigModal = ({ isOpen, onClose, onResetChat }: ConfigModalProps) => {
   const [headerImageUrl, setHeaderImageUrl] = useState('');
+  const [webhookUrl, setWebhookUrl] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       const savedImage = localStorage.getItem('whatsapp_header_image');
+      const savedWebhook = localStorage.getItem('whatsapp_webhook_url');
+      
       if (savedImage) {
         setHeaderImageUrl(savedImage);
+      }
+      
+      if (savedWebhook) {
+        setWebhookUrl(savedWebhook);
+      } else {
+        setWebhookUrl('https://primary-production-7d89.up.railway.app/webhook/I.Nova%20Hub');
       }
     }
   }, [isOpen]);
 
-  const handleSaveImage = () => {
+  const handleSaveConfig = () => {
     localStorage.setItem('whatsapp_header_image', headerImageUrl);
-    toast.success('Imagem do cabeçalho atualizada com sucesso!');
+    localStorage.setItem('whatsapp_webhook_url', webhookUrl);
+    
+    toast.success('Configurações atualizadas com sucesso!');
     onClose();
-    // Reload the page to update the header image
+    // Reload the page to apply the new settings
     window.location.reload();
   };
 
@@ -58,6 +69,21 @@ const ConfigModal = ({ isOpen, onClose, onResetChat }: ConfigModalProps) => {
             </p>
           </div>
 
+          <div className="space-y-2">
+            <label htmlFor="webhook-url" className="text-sm font-medium">
+              URL do Webhook:
+            </label>
+            <Input
+              id="webhook-url"
+              value={webhookUrl}
+              onChange={(e) => setWebhookUrl(e.target.value)}
+              placeholder="Digite a URL do webhook"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Configure a URL do webhook para envio e recebimento de mensagens.
+            </p>
+          </div>
+
           <div>
             <h3 className="text-sm font-medium mb-2">Gerenciamento de conversa:</h3>
             <Button 
@@ -80,7 +106,7 @@ const ConfigModal = ({ isOpen, onClose, onResetChat }: ConfigModalProps) => {
           >
             Cancelar
           </Button>
-          <Button onClick={handleSaveImage}>
+          <Button onClick={handleSaveConfig}>
             Salvar Alterações
           </Button>
         </div>

@@ -1,6 +1,6 @@
 
 import { useState, FormEvent, KeyboardEvent } from 'react';
-import { Send, Paperclip, Smile } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 interface MessageInputProps {
   onSendMessage: (message: string) => void;
@@ -28,15 +28,6 @@ const MessageInput = ({ onSendMessage, isLoading }: MessageInputProps) => {
   return (
     <div className="p-3 bg-gray-100 border-t">
       <form onSubmit={handleSubmit} className="flex items-center">
-        <button
-          type="button"
-          className="text-gray-500 hover:text-whatsapp-green p-2"
-          disabled={isLoading}
-          aria-label="Anexar arquivo"
-        >
-          <Paperclip size={24} />
-        </button>
-        
         <div className="flex-1 relative mx-2">
           <input
             type="text"
@@ -49,15 +40,6 @@ const MessageInput = ({ onSendMessage, isLoading }: MessageInputProps) => {
             aria-label="Mensagem"
           />
         </div>
-        
-        <button
-          type="button"
-          className="text-gray-500 hover:text-whatsapp-green p-2"
-          disabled={isLoading}
-          aria-label="Emojis"
-        >
-          <Smile size={24} />
-        </button>
         
         <button
           type="submit"

@@ -14,7 +14,8 @@ const Header = ({ onSettingsClick }: HeaderProps) => {
       setHeaderImage(savedImage);
     } else {
       // Default image if none is saved
-      setHeaderImage('https://cdn-icons-png.flaticon.com/512/124/124034.png');
+      setHeaderImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Bl1LN8vPr3KWzYB7l9biIzCCGA4RRZezCQ&s');
+      localStorage.setItem('whatsapp_header_image', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Bl1LN8vPr3KWzYB7l9biIzCCGA4RRZezCQ&s');
     }
   }, []);
 
@@ -29,8 +30,8 @@ const Header = ({ onSettingsClick }: HeaderProps) => {
                 alt="Logo" 
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/512/124/124034.png';
-                  localStorage.setItem('whatsapp_header_image', 'https://cdn-icons-png.flaticon.com/512/124/124034.png');
+                  e.currentTarget.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Bl1LN8vPr3KWzYB7l9biIzCCGA4RRZezCQ&s';
+                  localStorage.setItem('whatsapp_header_image', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Bl1LN8vPr3KWzYB7l9biIzCCGA4RRZezCQ&s');
                 }}
               />
             ) : (
@@ -39,7 +40,7 @@ const Header = ({ onSettingsClick }: HeaderProps) => {
               </div>
             )}
           </div>
-          <h1 className="font-semibold text-lg">Atendimento</h1>
+          <h1 className="font-semibold text-lg">I.Nova Unoesc</h1>
         </div>
       </div>
     </header>
