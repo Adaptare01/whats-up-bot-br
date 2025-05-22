@@ -69,6 +69,15 @@ export const useChatbot = () => {
         const data = JSON.parse(responseText);
         console.log('Resposta do webhook n8n convertida para JSON:', data);
         
+        // Se for um array, pega o primeiro item (formato da resposta observado nos logs)
+        if (Array.isArray(data) && data.length > 0) {
+          console.log('Detectado formato de array na resposta:', data[0]);
+          return {
+            status: 'success',
+            output: data[0].output || 'Sem resposta definida'
+          };
+        }
+        
         // Se a resposta for um objeto n8n específico, extrair a parte relevante
         if (data.data) {
           console.log('Detectada estrutura de dados n8n com propriedade data:', data.data);
@@ -149,7 +158,7 @@ export const useChatbot = () => {
         // Add bot response to chat
         const botMessage: Message = {
           id: uuidv4(),
-          text: data.output,
+          text: data.output, // Usar diretamente o output sem nenhuma modificação
           sender: 'bot',
           timestamp: Date.now(),
         };
