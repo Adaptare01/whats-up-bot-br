@@ -7,7 +7,7 @@ import ConfigModal from '@/components/ConfigModal';
 import ResetConversationButton from '@/components/ResetConversationButton';
 import { useChatbot } from '@/hooks/useChatbot';
 import { Settings } from 'lucide-react';
-import { getMessageCount, setMessageCount } from '@/services/storageService';
+import { getMessageCount } from '@/services/storageService';
 
 const Index = () => {
   const { messages, sendMessage, isLoading, resetChat } = useChatbot();
@@ -47,9 +47,7 @@ const Index = () => {
             className="bg-whatsapp-green text-white px-6 py-2 rounded-full shadow hover:bg-whatsapp-dark-green transition"
             onClick={() => {
               setStarted(true);
-              if (messageCount > 1) {
-                handleResetConversation(); // Só reinicia se nrmessage > 1
-              }
+              handleResetConversation();
               setTimeout(() => {
                 sendMessage('Olá quero inscrever minha ideia empreendedora');
               }, 0);
@@ -58,7 +56,7 @@ const Index = () => {
             Iniciar conversa
           </button>
         </div>
-      ) : messageCount < 7 ? (
+      ) : messageCount < 9 ? (
         <MessageInput onSendMessage={sendMessage} isLoading={isLoading} />
       ) : (
         <ResetConversationButton onReset={handleResetConversation} />
@@ -83,7 +81,7 @@ const Index = () => {
       <ConfigModal 
         isOpen={isConfigModalOpen} 
         onClose={() => setIsConfigModalOpen(false)} 
-        onResetChat={handleResetConversation} 
+        onResetChat={resetChat}
       />
     </div>
   );

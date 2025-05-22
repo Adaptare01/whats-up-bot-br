@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { Message, WebhookRequest } from '@/types/chat';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,7 +36,7 @@ export const useChatbot = () => {
 
     // Check if message count is already at limit
     const currentCount = getMessageCount();
-    if (currentCount >= 7) { // Alterado de 8 para 7
+    if (currentCount >= 9) {
       toast.error('Limite de mensagens atingido. Reinicie a conversa.');
       return;
     }
@@ -101,8 +102,8 @@ export const useChatbot = () => {
     setMessages([]);
     const newSessionId = resetSession();
     setSessionId(newSessionId);
-    setMessageCount(0); // Reset to 0 conforme solicitado
-    setCurrentMessageCount(0);
+    setMessageCount(1); // Reset to 1 instead of 0 as requested
+    setCurrentMessageCount(1);
     
     toast.success('Conversa reiniciada com sucesso!');
   }, []);
