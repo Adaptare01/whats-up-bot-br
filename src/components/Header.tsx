@@ -8,7 +8,7 @@ const Header = ({ onSettingsClick }: HeaderProps) => {
   const [headerImage, setHeaderImage] = useState<string>('');
 
   useEffect(() => {
-    setHeaderImage('/Imagem do WhatsApp de 2025-05-22 à(s) 10.20.02_63310823.jpg');
+    setHeaderImage('/inova%20unoesc.png');
   }, []);
 
   return (
