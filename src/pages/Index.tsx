@@ -53,7 +53,7 @@ const Index = () => {
             Iniciar conversa
           </button>
         </div>
-      ) : messageCount < 8 ? (
+      ) : messageCount < 7 ? (
         <MessageInput onSendMessage={sendMessage} isLoading={isLoading} />
       ) : (
         <ResetConversationButton onReset={handleResetConversation} />

@@ -35,7 +35,7 @@ export const useChatbot = () => {
 
     // Check if message count is already at limit
     const currentCount = getMessageCount();
-    if (currentCount >= 8) { // Alterado de 9 para 8
+    if (currentCount >= 7) { // Alterado de 8 para 7
       toast.error('Limite de mensagens atingido. Reinicie a conversa.');
       return;
     }
