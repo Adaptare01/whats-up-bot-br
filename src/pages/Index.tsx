@@ -47,7 +47,9 @@ const Index = () => {
             className="bg-whatsapp-green text-white px-6 py-2 rounded-full shadow hover:bg-whatsapp-dark-green transition"
             onClick={() => {
               setStarted(true);
-              handleResetConversation(); // Executa o reset como no botão Reiniciar Conversa
+              if (messageCount > 1) {
+                handleResetConversation(); // Só reinicia se nrmessage > 1
+              }
               setTimeout(() => {
                 sendMessage('Olá quero inscrever minha ideia empreendedora');
               }, 0);
