@@ -48,7 +48,9 @@ const Index = () => {
             onClick={() => {
               setStarted(true);
               setMessageCount(0); // Ajusta nrmessage para 0 ao iniciar conversa
-              sendMessage('Olá quero inscrever minha ideia empreendedora');
+              setTimeout(() => {
+                sendMessage('Olá quero inscrever minha ideia empreendedora');
+              }, 0);
             }}
           >
             Iniciar conversa
