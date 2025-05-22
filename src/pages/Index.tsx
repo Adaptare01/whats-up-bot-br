@@ -75,7 +75,7 @@ const Index = () => {
           <Settings size={20} />
         </button>
       </footer>
-      
+      <div style={{ height: 20 }} />
       <LoginModal 
         isOpen={isLoginModalOpen} 
         onClose={() => setIsLoginModalOpen(false)} 
