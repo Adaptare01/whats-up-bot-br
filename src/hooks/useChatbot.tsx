@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { Message, WebhookRequest } from '@/types/chat';
 import { v4 as uuidv4 } from 'uuid';
@@ -102,8 +101,8 @@ export const useChatbot = () => {
     setMessages([]);
     const newSessionId = resetSession();
     setSessionId(newSessionId);
-    setMessageCount(1); // Reset to 1 instead of 0 as requested
-    setCurrentMessageCount(1);
+    setMessageCount(0); // Reset to 0 conforme solicitado
+    setCurrentMessageCount(0);
     
     toast.success('Conversa reiniciada com sucesso!');
   }, []);
