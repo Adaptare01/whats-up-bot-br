@@ -17,6 +17,12 @@ const Index = () => {
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
+    // Limpa o localStorage ao abrir a página para evitar dados antigos
+    localStorage.clear();
+    setMessageCount(getMessageCount());
+  }, []);
+
+  useEffect(() => {
     // Update message count whenever messages change
     setMessageCount(getMessageCount());
   }, [messages]);
