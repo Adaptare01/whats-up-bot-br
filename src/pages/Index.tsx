@@ -47,10 +47,7 @@ const Index = () => {
             className="bg-whatsapp-green text-white px-6 py-2 rounded-full shadow hover:bg-whatsapp-dark-green transition"
             onClick={() => {
               setStarted(true);
-              handleResetConversation();
-              setTimeout(() => {
-                sendMessage('Olá quero inscrever minha ideia empreendedora');
-              }, 0);
+              sendMessage('Olá quero inscrever minha ideia empreendedora');
             }}
           >
             Iniciar conversa
