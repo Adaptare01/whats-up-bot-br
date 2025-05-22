@@ -23,7 +23,7 @@ const MessageList = ({ messages, isLoading }: MessageListProps) => {
     <div className="flex-1 overflow-y-auto p-4 chat-background">
       <div className="flex flex-col space-y-4">
         {messages.length === 0 && (
-          <div className="flex justify-center items-center h-32">
+          <div className="flex justify-center items-center h-full">
             <p className="text-gray-500 text-center">
               Envie uma mensagem para iniciar a conversa.
             </p>

@@ -53,7 +53,7 @@ export const incrementMessageCount = (): number => {
 export const resetSession = (): string => {
   const newSessionId = uuidv4();
   localStorage.setItem(SESSION_ID_KEY, newSessionId);
-  localStorage.setItem(MESSAGE_COUNT_KEY, '0');
+  localStorage.setItem(MESSAGE_COUNT_KEY, '1'); // Reset to 1 instead of 0 as requested
   return newSessionId;
 };
 

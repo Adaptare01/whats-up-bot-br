@@ -9,14 +9,15 @@ import {
   getMessageCount, 
   getWebhookUrl, 
   incrementMessageCount,
-  resetSession
+  resetSession,
+  setMessageCount
 } from '@/services/storageService';
 
 export const useChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string>('');
-  const [messageCount, setMessageCount] = useState<number>(0);
+  const [messageCount, setCurrentMessageCount] = useState<number>(0);
   const [webhookUrl, setWebhookUrl] = useState<string>('');
   
   // Initialize session ID, message count, and webhook URL
@@ -26,16 +27,23 @@ export const useChatbot = () => {
     const storedWebhookUrl = getWebhookUrl();
     
     setSessionId(storedSessionId);
-    setMessageCount(storedMessageCount);
+    setCurrentMessageCount(storedMessageCount);
     setWebhookUrl(storedWebhookUrl);
   }, []);
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim()) return;
 
+    // Check if message count is already at limit
+    const currentCount = getMessageCount();
+    if (currentCount >= 9) {
+      toast.error('Limite de mensagens atingido. Reinicie a conversa.');
+      return;
+    }
+
     // Increment message count
     const newMessageCount = incrementMessageCount();
-    setMessageCount(newMessageCount);
+    setCurrentMessageCount(newMessageCount);
 
     // Add user message to chat
     const userMessage: Message = {
@@ -88,13 +96,14 @@ export const useChatbot = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId, messageCount, webhookUrl]);
+  }, [sessionId, webhookUrl]);
 
   const resetChat = useCallback(() => {
     setMessages([]);
     const newSessionId = resetSession();
     setSessionId(newSessionId);
-    setMessageCount(0);
+    setMessageCount(1); // Reset to 1 instead of 0 as requested
+    setCurrentMessageCount(1);
     
     toast.success('Conversa reiniciada com sucesso!');
   }, []);
@@ -104,6 +113,7 @@ export const useChatbot = () => {
     sendMessage,
     isLoading,
     resetChat,
+    messageCount: messageCount,
   };
 };
 
