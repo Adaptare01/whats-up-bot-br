@@ -14,6 +14,7 @@ const Index = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     // Update message count whenever messages change
@@ -40,7 +41,19 @@ const Index = () => {
       
       <MessageList messages={messages} isLoading={isLoading} />
       
-      {messageCount < 8 ? (
+      {!started ? (
+        <div className="flex justify-center p-4">
+          <button
+            className="bg-whatsapp-green text-white px-6 py-2 rounded-full shadow hover:bg-whatsapp-dark-green transition"
+            onClick={() => {
+              setStarted(true);
+              sendMessage('Olá quero inscrever minha ideia empreendedora');
+            }}
+          >
+            Iniciar conversa
+          </button>
+        </div>
+      ) : messageCount < 8 ? (
         <MessageInput onSendMessage={sendMessage} isLoading={isLoading} />
       ) : (
         <ResetConversationButton onReset={handleResetConversation} />
@@ -65,7 +78,7 @@ const Index = () => {
       <ConfigModal 
         isOpen={isConfigModalOpen} 
         onClose={() => setIsConfigModalOpen(false)} 
-        onResetChat={resetChat}
+        onResetChat={handleResetConversation} 
       />
     </div>
   );
