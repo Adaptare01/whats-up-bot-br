@@ -17,14 +17,11 @@ const Header = ({ onSettingsClick }: HeaderProps) => {
         <div className="flex items-center flex-1 justify-center h-full">
           <div className="w-full h-full flex items-center justify-center">
             {headerImage ? (
-              <div className="flex items-center gap-2">
-                <img 
-                  src={headerImage} 
-                  alt="Logo" 
-                  style={{ height: '35px', maxHeight: '35px', objectFit: 'contain', width: 'auto', display: 'block' }}
-                />
-                <span style={{ color: '#fff', fontWeight: 600, fontSize: 20, letterSpacing: 1 }}>Unoesc</span>
-              </div>
+              <img 
+                src={headerImage} 
+                alt="Logo" 
+                style={{ height: '35px', maxHeight: '35px', objectFit: 'contain', width: 'auto', display: 'block' }}
+              />
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
                 Logo
