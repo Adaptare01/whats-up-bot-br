@@ -12,7 +12,7 @@ const Header = ({ onSettingsClick }: HeaderProps) => {
   }, []);
 
   return (
-    <header className="chat-header sticky top-0 z-10" style={{ height: 45, minHeight: 45, maxHeight: 45, paddingTop: 5, paddingBottom: 5 }}>
+    <header className="chat-header sticky top-0 z-10" style={{ background: '#000', height: 45, minHeight: 45, maxHeight: 45, paddingTop: 5, paddingBottom: 5 }}>
       <div className="flex items-center justify-between w-full h-full">
         <div className="flex items-center flex-1 justify-center h-full">
           <div className="w-full h-full flex items-center justify-center">
