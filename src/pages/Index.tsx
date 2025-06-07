@@ -52,13 +52,13 @@ const Index = () => {
       {!started ? (
         <div className="flex justify-center p-4">
           <button
-            className="bg-whatsapp-green text-white px-6 py-2 rounded-full shadow hover:bg-whatsapp-dark-green transition"
+            className="bg-orange-500 text-white px-6 py-2 rounded-full shadow hover:bg-orange-600 transition"
             onClick={() => {
               setStarted(true);
               sendMessage('Vamos Inovar');
             }}
           >
-            Iniciar conversa
+            Apresente sua Idéia
           </button>
         </div>
       ) : messageCount < 7 ? (
