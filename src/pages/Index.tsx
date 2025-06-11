@@ -52,7 +52,7 @@ const Index = () => {
       {!started ? (
         <div className="flex justify-center p-4">
           <button
-            className="bg-orange-500 text-white px-6 py-2 rounded-full shadow hover:bg-orange-600 transition"
+            className="bg-green-600 text-white px-6 py-2 rounded-full shadow hover:bg-green-700 transition"
             onClick={() => {
               setStarted(true);
               sendMessage('Vamos Inovar');
